@@ -1,6 +1,10 @@
 #ifndef PID_H
 #define PID_H
 
+#include <vector>
+
+using std::vector;
+
 class PID {
  public:
   /**
@@ -31,6 +35,8 @@ class PID {
    */
   double TotalError();
 
+  double twiddle(double cte);
+
  private:
   /**
    * PID Errors
@@ -41,10 +47,19 @@ class PID {
 
   /**
    * PID Coefficients
-   */ 
-  double Kp;
-  double Ki;
-  double Kd;
+   */
+  vector<double> Ks;
+
+  /**
+   * Twiddle parameters
+   */
+  vector<double> deltas;
+  int index;
+  int iterations;
+  double error_sum;
+  double best_error;
+  bool plus;
+  bool initializeWithNewParameter;
 };
 
 #endif  // PID_H
