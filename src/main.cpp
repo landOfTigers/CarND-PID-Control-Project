@@ -33,10 +33,10 @@ int main() {
   uWS::Hub h;
 
   PID pidSteeringAngle;
-  pidSteeringAngle.Init(0.18, 0.001, 1.4);
+  pidSteeringAngle.Init(0.05, 0.0, 0.0);
 
   PID pidSpeed;
-  pidSpeed.Init(0.1, 0.0, 0.0);
+  pidSpeed.Init(0.5, 0.0, 0.0);
 
   h.onMessage([&pidSteeringAngle, &pidSpeed](uWS::WebSocket<uWS::SERVER> ws,
                                              char *data, size_t length, uWS::OpCode opCode) {
@@ -65,14 +65,14 @@ int main() {
           pidSteeringAngle.UpdateError(cte);
           double steer_value = -pidSteeringAngle.TotalError();
 
-          const double desiredSpeed = 40;
+          const double desiredSpeed = 50;
           pidSpeed.UpdateError(speed - desiredSpeed);
           double throttle_value = -pidSpeed.TotalError();
 
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
-          //pidSteeringAngle.twiddle(cte);
+          pidSteeringAngle.twiddle(cte);
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;

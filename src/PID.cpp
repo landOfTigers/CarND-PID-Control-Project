@@ -17,7 +17,7 @@ void PID::Init(double Kp_, double Ki_, double Kd_) {
   d_error = 0.0;
   i_error = 0.0;
 
-  deltas = {0.0001, 0.0001, 0.0001};
+  deltas = {0.01, 0.0001, 0.01};
   index = 0;
   iterations = 0;
   error_sum = 0.0;
@@ -39,8 +39,9 @@ double PID::twiddle(double cte) {
 //  double tolerance = 0.001;
 //  if (best_error > tolerance) {}
   iterations++;
-  int number_samples = 10;
-  int initial_offset = 100;
+  std::cout << "Iteration: " << iterations << std::endl;
+  int number_samples = 8;
+  int initial_offset = 60;
 
   // allow controller to stabilize before doing anything
   if (iterations > initial_offset) {
@@ -54,7 +55,7 @@ double PID::twiddle(double cte) {
   }
 
   if ((iterations % number_samples) == 0 && iterations >= (initial_offset + number_samples)) {
-    //perform twiddle iteration
+    std::cout << "Perform twiddle iteration." << std::endl;
     if (initializeWithNewParameter) {
       Ks[index] += deltas[index];
       plus = true;
@@ -79,14 +80,15 @@ double PID::twiddle(double cte) {
 
           // next K parameter
           initializeWithNewParameter = true;
+          std::cout << "Start iteration for next parameter." << std::endl;
           index++;
           index %= 3;
         }
       }
     }
-
+    std::cout << "Updated parameters to: Kp=" << Ks[0] << ", Ki=" << Ks[1] << ", Kd=" << Ks[2] << std::endl;
   }
-  std::cout << "Updated parameters to: Kp=" << Ks[0] << ", Ki=" << Ks[1] << ", Kd=" << Ks[2] << std::endl;
+
 
   // prepare next iteration
   error_sum = 0.0;
