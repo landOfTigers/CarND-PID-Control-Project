@@ -96,3 +96,32 @@ still be compilable with cmake and make./
 ## How to write a README
 A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
 
+
+# Implementation
+
+## Using two controllers
+Besides implementing a PID controller for the steering angle, I used another one for the speed, so that the vehicle would be able to travel at a constant velocity.
+
+## Initial parameter tuning
+I performed the initial parameter tuning by using the heuristic method described in this
+[stackexchange post](https://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops).
+
+## Twiddle
+After this, I implemented a variation of the twiddle algorithm that evaluates parameters while the vehicle is running on
+the track. The steps are the following:
+
+1. The length of the track covers about 720 iterations of received websocket messages, upon each of which I have the
+possibility to adapt my parameters. To have comparable conditions for each iteration of the twiddle algorithm, I only
+update one parameter once per lap, which is about every 720 iterations.
+
+2. I calculate the mean square error (mse) for each lap. The square helps in reducing oscillations that would otherwise
+cancel out in the error sum because of the positive and negative amplitudes of the cross track error. The best error
+gets initialized with the first one of these mse calculations (excluding an initial offset for obtaining the desired
+speed).
+
+3. Starting from the second lap, I compare the mse of the corresponding lap to my best error and perform a twiddle
+iteration on it. If it improved after a parameter had been increased, I continue increasing that parameter. If it
+improved after the parameter had been decreased, I continue decreasing it. If it did not improve after a parameter had
+been increased, I decrease it for the next iteration. If it did not improve after a parameter had been decreased, I go
+back to the last stable value of that parameter and increase my index to start optimizing another parameter in the next
+iteration.
