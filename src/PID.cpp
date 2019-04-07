@@ -2,10 +2,6 @@
 #include <iostream>
 #include <cmath>
 
-PID::PID() {}
-
-PID::~PID() {}
-
 void PID::Init(double Kp_, double Ki_, double Kd_) {
 
   Ks = {Kp_, Ki_, Kd_};

@@ -8,16 +8,6 @@ using std::vector;
 class PID {
  public:
   /**
-   * Constructor
-   */
-  PID();
-
-  /**
-   * Destructor.
-   */
-  virtual ~PID();
-
-  /**
    * Initialize PID.
    * @param (Kp_, Ki_, Kd_) The initial PID coefficients
    */
@@ -51,7 +41,7 @@ class PID {
   vector<double> Ks;
 
   /**
-   * Twiddle parameters and helper functions
+   * Twiddle parameters and helper methods
    */
   vector<double> deltas;
   int index;
