@@ -56,13 +56,13 @@ class PID {
   vector<double> deltas;
   int index;
   int iterations;
-  double error_sum;
+  double mse;
   double best_error;
   bool plus;
   void twiddle_iteration(int &number_samples);
   void next_parameter();
   void initialize_with_new_parameter();
-  void steps_after_improvement(double &err_avg);
+  void steps_after_improvement();
   void steps_after_deterioration();
 };
 

@@ -17,7 +17,7 @@ void PID::Init(double Kp_, double Ki_, double Kd_) {
   deltas = {Kp_ / 10.0, Ki_ / 10.0, Kd_ / 10.0};
   index = 0;
   iterations = 0;
-  error_sum = 0.0;
+  mse = 0.0;
   plus = false;
 }
 
@@ -33,18 +33,18 @@ double PID::TotalError() {
 
 void PID::twiddle(double cte) {
   iterations++;
-  int number_samples = 200; // 800 = about 1 round
+  int number_samples = 800; // 800 = about 1 round
   int initial_offset = 60;
 
   // allow controller to stabilize before doing anything
   if (iterations > initial_offset) {
-    error_sum += cte;
+    mse += cte * cte;
   }
 
   if (iterations == (initial_offset + number_samples)) {
     // initialize best error
-    best_error = fabs(error_sum / number_samples);
-    error_sum = 0.0;
+    best_error = mse / number_samples;
+    mse = 0.0;
     initialize_with_new_parameter();
   }
 
@@ -72,24 +72,24 @@ void PID::initialize_with_new_parameter() {
   std::cout << "Initialize with new parameter." << std::endl;
   Ks[index] += deltas[index];
   plus = true;
-  error_sum = 0.0;
+  mse = 0.0;
 }
 
 void PID::twiddle_iteration(int &number_samples) {
-  double err_avg = fabs(error_sum / number_samples);
+  mse /= number_samples;
 
-  if (err_avg < best_error) {
-    steps_after_improvement(err_avg);
+  if (mse < best_error) {
+    steps_after_improvement();
   } else {
     steps_after_deterioration();
   }
   std::cout << "Deltas: " << deltas[0] << ", " << deltas[1] << ", " << deltas[2] << ", " << std::endl;
   // prepare next iteration
-  error_sum = 0.0;
+  mse = 0.0;
 }
 
-void PID::steps_after_improvement(double &err_avg) {
-  best_error = err_avg;
+void PID::steps_after_improvement() {
+  best_error = mse;
   deltas[index] *= 1.1;
   if (plus) {
     Ks[index] += deltas[index];
