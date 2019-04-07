@@ -49,8 +49,9 @@ class PID {
   double mse;
   double best_error;
   bool plus;
-  void twiddle_iteration(int &number_samples);
-  void next_parameter();
+  int number_laps;
+  const int number_samples = 720; // 720 = about 1 lap
+  void twiddle_iteration();
   void initialize_with_new_parameter();
   void steps_after_improvement();
   void steps_after_deterioration();
