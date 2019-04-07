@@ -31,7 +31,7 @@ int main() {
   uWS::Hub h;
 
   PID pidSteeringAngle;
-  pidSteeringAngle.Init(0.166644, 0.00015015, 0.97328);
+  pidSteeringAngle.Init(0.197603, 0.0001, 1.2);
 
   PID pidSpeed;
   pidSpeed.Init(0.5, 0.0, 0.0);
@@ -64,14 +64,16 @@ int main() {
           double throttle_value = -pidSpeed.TotalError();
 
           // DEBUG
-          // std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
+          std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
           // used for optimizing PID paramters
+          /*
           iterations++;
           const int initial_offset = 60; // for obtaining the desired speed
           if (iterations > initial_offset) {
             pidSteeringAngle.twiddle(cte);
           }
+          */
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;

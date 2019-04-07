@@ -10,7 +10,8 @@ void PID::Init(double Kp_, double Ki_, double Kd_) {
   d_error = 0.0;
   i_error = 0.0;
 
-  deltas = {0.0134981, 1.47015e-05, 0.0875952};
+  deltas = {Kp_ / 10.0, Ki_ / 10.0, Kd_ / 10.0};
+
   index = 0;
   iterations = 0;
   mse = 0.0;
@@ -30,7 +31,7 @@ double PID::TotalError() {
 
 void PID::twiddle(double cte) {
   iterations++;
-  mse += cte * cte;
+  mse += pow(cte, 2);
 
   const bool lap_one_complete = (iterations == number_samples);
   if (lap_one_complete) {
@@ -38,6 +39,7 @@ void PID::twiddle(double cte) {
     printf("\nLap %d complete.\n", number_laps);
     // initialize best error
     best_error = mse / number_samples;
+    std::cout << "Lap error: " << best_error << std::endl;
     initialize_with_new_parameter();
     return;
   }
@@ -67,6 +69,8 @@ void PID::initialize_with_new_parameter() {
 
 void PID::twiddle_iteration() {
   mse /= number_samples;
+
+  std::cout << "Lap error: " << mse << std::endl;
 
   if (mse < best_error) {
     steps_after_improvement();
