@@ -35,7 +35,7 @@ class PID {
    */
   double TotalError();
 
-  double twiddle(double cte);
+  void twiddle(double cte);
 
  private:
   /**
@@ -51,7 +51,7 @@ class PID {
   vector<double> Ks;
 
   /**
-   * Twiddle parameters
+   * Twiddle parameters and helper functions
    */
   vector<double> deltas;
   int index;
@@ -59,7 +59,11 @@ class PID {
   double error_sum;
   double best_error;
   bool plus;
-  bool initializeWithNewParameter;
+  void twiddle_iteration(int &number_samples);
+  void next_parameter();
+  void initialize_with_new_parameter();
+  void steps_after_improvement(double &err_avg);
+  void steps_after_deterioration();
 };
 
 #endif  // PID_H

@@ -33,7 +33,7 @@ int main() {
   uWS::Hub h;
 
   PID pidSteeringAngle;
-  pidSteeringAngle.Init(0.12, 0.0, 0.7);
+  pidSteeringAngle.Init(0.13, 0.00015, 1.14);
 
   PID pidSpeed;
   pidSpeed.Init(0.5, 0.0, 0.0);
@@ -70,15 +70,15 @@ int main() {
           double throttle_value = -pidSpeed.TotalError();
 
           // DEBUG
-          std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
+          // std::cout << "CTE: " << cte << " Steering Value: " << steer_value << std::endl;
 
-          //pidSteeringAngle.twiddle(cte);
+          pidSteeringAngle.twiddle(cte);
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = throttle_value;
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-          std::cout << msg << std::endl;
+          // std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }  // end "telemetry" if
       } else {
