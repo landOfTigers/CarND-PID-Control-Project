@@ -100,11 +100,15 @@ A well written README file can enhance your project and portfolio.  Develop your
 # Implementation
 
 ## Using two controllers
-Besides implementing a PID controller for the steering angle, I used another one for the speed, so that the vehicle would be able to travel at a constant velocity.
+Besides implementing a PID controller for the steering angle, I used another one for the speed, so that the vehicle
+would be able to travel at a constant velocity.
 
 ## Initial parameter tuning
 I performed the initial parameter tuning by using the heuristic method described in this
 [stackexchange post](https://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops).
+Increasing P had the effect that the vehicle would start oscillating to compensate the error. Increasing D helped in
+compensating these oscillations as it made the controller react quickly to sudden changes. Increasing I helped in
+decreasing the controller's overshoots.
 
 ## Twiddle
 After this, I implemented a variation of the twiddle algorithm that evaluates parameters while the vehicle is running on
